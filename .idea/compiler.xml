@@ -8,12 +8,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="mall-admin" />
         <module name="mall-security" />
+        <module name="mall-mbg" />
         <module name="mall-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="mall-admin" target="1.8" />
       <module name="mall-common" target="1.8" />
+      <module name="mall-mbg" target="1.8" />
       <module name="mall-security" target="1.8" />
       <module name="MyMall" target="1.8" />
     </bytecodeTargetLevel>
@@ -22,6 +24,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="mall-admin" options="-parameters" />
       <module name="mall-common" options="-parameters" />
+      <module name="mall-mbg" options="-parameters" />
       <module name="mall-security" options="-parameters" />
     </option>
   </component>
