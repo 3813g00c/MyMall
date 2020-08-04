@@ -92,7 +92,7 @@
         <aliyun-oss.version>2.5.0</aliyun-oss.version>
         <logstash-logback.version>4.8</logstash-logback.version>
         <minio.version>3.0.10</minio.version>
-        <guava.version>20.0</guava.version>
+        <guava.version>24.1.1</guava.version>
         <mall-common.version>1.0-SNAPSHOT</mall-common.version>
         <mall-mbg.version>1.0-SNAPSHOT</mall-mbg.version>
         <mall-security.version>1.0-SNAPSHOT</mall-security.version>
