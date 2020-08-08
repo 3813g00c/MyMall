@@ -3,8 +3,12 @@ package com.ywxiang.mall.mapper;
 import com.ywxiang.mall.model.UmsAdmin;
 import com.ywxiang.mall.model.UmsAdminExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+@Mapper
 public interface UmsAdminMapper {
     long countByExample(UmsAdminExample example);
 
