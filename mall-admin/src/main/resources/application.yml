@@ -24,3 +24,9 @@ spring:
     port: 6379 # Redis服务器连接端口
     password: Xyw@172410 # Redis服务器连接密码（默认为空）
     timeout: 300ms # 连接超时时间（毫秒）
+
+jwt:
+  tokenHeader: Authorization #JWT存储的请求头
+  secret: mall-admin-secret #JWT加解密使用的密钥
+  expiration: 604800 #JWT的超期限时间(60*60*24*7)
+  tokenHead: 'Bearer ' #JWT负载中拿到开头

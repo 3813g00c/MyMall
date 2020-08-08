@@ -46,6 +46,15 @@ public class JwtTokenUtils implements Serializable {
     private static String tokenHead;
 
     /**
+     * 密钥
+     */
+    private static final String SECRET = "abcdefgh";
+    /**
+     * 有效期12小时
+     */
+    private static final long EXPIRE_TIME = 12 * 60 * 60 * 1000;
+
+    /**
      * 生成令牌
      *
      * @param authentication 用户
@@ -66,8 +75,9 @@ public class JwtTokenUtils implements Serializable {
      * @return 令牌
      */
     private static String generateToken(Map<String, Object> claims) {
-        Date expirationDate = new Date(System.currentTimeMillis() + expiration);
-        return Jwts.builder().setClaims(claims).setExpiration(expirationDate).signWith(SignatureAlgorithm.HS512, secret).compact();
+        System.out.println(EXPIRE_TIME);
+        Date expirationDate = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+        return Jwts.builder().setClaims(claims).setExpiration(expirationDate).signWith(SignatureAlgorithm.HS512, SECRET).compact();
     }
 
     /**
@@ -138,7 +148,7 @@ public class JwtTokenUtils implements Serializable {
     private static Claims getClaimsFromToken(String token) {
         Claims claims;
         try {
-            claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
         } catch (Exception e) {
             claims = null;
         }
