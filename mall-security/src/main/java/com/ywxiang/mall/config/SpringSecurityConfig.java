@@ -5,6 +5,7 @@ import com.ywxiang.mall.component.JwtAuthenticationFilter;
 import com.ywxiang.mall.component.JwtLoginFilter;
 import com.ywxiang.mall.util.JwtTokenUtils;
 import com.ywxiang.mall.utils.HttpUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -34,8 +36,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
+    @Autowired
+    IgnoreUrlsConfig ignoreUrlsConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
+                .authorizeRequests();
+        //不需要保护的资源路径允许访问
+        for (String url : ignoreUrlsConfig.getUrls()) {
+            registry.antMatchers(url).permitAll();
+        }
         // 禁用 csrf, 由于使用的是JWT，我们这里不需要csrf
         http.cors().and().csrf().disable()
                 .authorizeRequests()
