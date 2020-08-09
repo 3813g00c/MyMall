@@ -1,16 +1,6 @@
 package com.ywxiang.mall.Controller;
 
-import com.ywxiang.mall.api.CommonResult;
-import com.ywxiang.mall.component.JwtAuthenticatioToken;
-import com.ywxiang.mall.util.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * @author ywxiang
@@ -18,8 +8,8 @@ import java.io.IOException;
  */
 @RestController
 public class LoginControllerTest {
-    @Autowired
-    private AuthenticationManager authenticationManager;
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
 
 //    /**
 //     * 登录接口

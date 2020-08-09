@@ -1,20 +1,26 @@
 package com.ywxiang.mall.config;
 
+import com.ywxiang.mall.api.CommonResult;
 import com.ywxiang.mall.component.JwtAuthenticationFilter;
-import com.ywxiang.mall.component.JwtAuthenticationProvider;
 import com.ywxiang.mall.component.JwtLoginFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ywxiang.mall.util.JwtTokenUtils;
+import com.ywxiang.mall.utils.HttpUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ywxiang
@@ -25,13 +31,8 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(new JwtAuthenticationProvider(userDetailsService));
-    }
+    @Value("${jwt.tokenHead}")
+    private String tokenHead;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -39,7 +40,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                 // 跨域预检请求
-                //.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 登录URL
                 .antMatchers("/admin/login").permitAll()
                 // swagger
@@ -51,15 +52,52 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         // 退出登录处理器
         http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
         // 开启登录认证流程过滤器
-        http.addFilterBefore(new JwtLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
         // 访问控制时登录状态检查过滤器
         http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
+    public JwtLoginFilter jwtLoginFilter() throws Exception {
+        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter();
+        jwtLoginFilter.setAuthenticationManager(authenticationManager());
+        jwtLoginFilter.setFilterProcessesUrl("/admin/login");
+        jwtLoginFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    String token = JwtTokenUtils.generateToken(authentication);
+                    Map<String, String> tokenMap = new HashMap<>(3);
+                    tokenMap.put("token", token);
+                    tokenMap.put("tokenHead", tokenHead);
+                    HttpUtils.write(response, CommonResult.success(tokenMap));
+                }
+        );
+        jwtLoginFilter.setAuthenticationFailureHandler((request, response, exception) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    CommonResult<String> result = CommonResult.failed(exception.getMessage());
+                    if (exception instanceof LockedException) {
+                        result.setMessage("账户被锁定，请联系管理员!");
+                    } else if (exception instanceof CredentialsExpiredException) {
+                        result.setMessage("密码过期，请联系管理员!");
+                    } else if (exception instanceof AccountExpiredException) {
+                        result.setMessage("账户过期，请联系管理员!");
+                    } else if (exception instanceof DisabledException) {
+                        result.setMessage("账户被禁用，请联系管理员!");
+                    } else if (exception instanceof BadCredentialsException) {
+                        result.setMessage("用户名或者密码输入错误，请重新输入!");
+                    }
+                    HttpUtils.write(response, result);
+                }
+        );
+        return jwtLoginFilter;
+    }
+
+    /**
+     * 加密
+     * @return BCryptPasswordEncoder
+     */
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 }

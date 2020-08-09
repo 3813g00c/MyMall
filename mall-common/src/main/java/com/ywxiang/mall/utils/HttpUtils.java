@@ -1,7 +1,6 @@
 package com.ywxiang.mall.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ywxiang.mall.api.CommonResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -30,8 +29,22 @@ public class HttpUtils {
      */
     public static void write(HttpServletResponse response, Object data) throws IOException {
         response.setContentType("application/json; charset=utf-8");
-        CommonResult<Object> result = CommonResult.success(data);
-        String json = JSONObject.toJSONString(result);
+        String json = JSONObject.toJSONString(data);
+        response.getWriter().print(json);
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    /**
+     * 输出信息到浏览器
+     * @param response
+     * @param data
+     * @throws IOException
+     */
+    public static void write(HttpServletResponse response, Object data, int code) throws IOException {
+        response.setContentType("application/json; charset=utf-8");
+        response.setStatus(code);
+        String json = JSONObject.toJSONString(data);
         response.getWriter().print(json);
         response.getWriter().flush();
         response.getWriter().close();

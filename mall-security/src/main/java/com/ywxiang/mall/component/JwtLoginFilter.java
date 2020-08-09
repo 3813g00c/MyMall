@@ -2,9 +2,7 @@ package com.ywxiang.mall.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ywxiang.mall.api.CommonResult;
-import com.ywxiang.mall.util.JwtTokenUtils;
-import org.springframework.security.authentication.AuthenticationManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -15,34 +13,18 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author ywxiang
  * @date 2020/8/7 下午8:53
  */
+@Slf4j
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
-
-    public JwtLoginFilter(AuthenticationManager authManager) {
-        setAuthenticationManager(authManager);
-        setFilterProcessesUrl("/admin/login");
-        setAuthenticationSuccessHandler((request, response, authentication) -> {
-                    response.setContentType("application/json;charset=utf-8");
-                    //JwtAuthenticatioToken token = new JwtAuthenticatioToken(authentication.getPrincipal(), null, JwtTokenUtils.generateToken(authentication));
-                    String token = JwtTokenUtils.generateToken(authentication);
-                    Map<String, String> tokenMap = new HashMap<>();
-                    tokenMap.put("token", token);
-                    tokenMap.put("tokenHead", "dsada");
-                    PrintWriter out = response.getWriter();
-                    out.write(JSONObject.toJSONString(CommonResult.success(tokenMap)));
-                    out.flush();
-                    out.close();
-                }
-        );
-    }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
@@ -57,7 +39,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         // 此过滤器的用户名密码默认从request.getParameter()获取，但是这种
         // 读取方式不能读取到如 application/json 等 post 请求数据，需要把
         // 用户名密码的读取逻辑修改为到流中读取request.getInputStream()
-
         String body = getBody(request);
         JSONObject jsonObject = JSON.parseObject(body);
         String username = jsonObject.getString(getUsernameParameter());
