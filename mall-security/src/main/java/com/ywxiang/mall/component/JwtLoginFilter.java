@@ -2,13 +2,11 @@ package com.ywxiang.mall.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ywxiang.mall.api.CommonResult;
 import com.ywxiang.mall.util.JwtTokenUtils;
-import com.ywxiang.mall.utils.HttpUtils;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -17,11 +15,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,8 +25,23 @@ import java.util.Map;
  * @date 2020/8/7 下午8:53
  */
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
+
     public JwtLoginFilter(AuthenticationManager authManager) {
         setAuthenticationManager(authManager);
+        setFilterProcessesUrl("/admin/login");
+        setAuthenticationSuccessHandler((request, response, authentication) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    //JwtAuthenticatioToken token = new JwtAuthenticatioToken(authentication.getPrincipal(), null, JwtTokenUtils.generateToken(authentication));
+                    String token = JwtTokenUtils.generateToken(authentication);
+                    Map<String, String> tokenMap = new HashMap<>();
+                    tokenMap.put("token", token);
+                    tokenMap.put("tokenHead", "dsada");
+                    PrintWriter out = response.getWriter();
+                    out.write(JSONObject.toJSONString(CommonResult.success(tokenMap)));
+                    out.flush();
+                    out.close();
+                }
+        );
     }
 
     @Override
@@ -64,21 +75,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         JwtAuthenticatioToken authRequest = new JwtAuthenticatioToken(username, password);
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        // 存储登录信息到上下文
-        SecurityContextHolder.getContext().setAuthentication(authResult);
-        // 记住我服务
-        getRememberMeServices().loginSuccess(request, response, authResult);
-        // 触发事件监听器
-        if (this.eventPublisher != null) {
-            eventPublisher.publishEvent(new InteractiveAuthenticationSuccessEvent(authResult, this.getClass()));
-        }
-        // 生成并返回token给客户端，后续访问携带此token
-        JwtAuthenticatioToken token = new JwtAuthenticatioToken(null, null, JwtTokenUtils.generateToken(authResult));
-        HttpUtils.write(response, token);
     }
 
     /**
