@@ -52,12 +52,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 跨域预检请求
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // 登录URL
-                .antMatchers("/admin/login").permitAll()
-                // swagger
-                .antMatchers("/swagger**/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/v2/**").permitAll()
                 // 其他所有请求需要身份认证
                 .anyRequest().authenticated();
         // 退出登录处理器
@@ -85,15 +79,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         jwtLoginFilter.setAuthenticationFailureHandler((request, response, exception) -> {
                     response.setContentType("application/json;charset=utf-8");
                     CommonResult<String> result = CommonResult.failed(exception.getMessage());
-                    if (exception instanceof LockedException) {
-                        result.setMessage("账户被锁定，请联系管理员!");
-                    } else if (exception instanceof CredentialsExpiredException) {
-                        result.setMessage("密码过期，请联系管理员!");
-                    } else if (exception instanceof AccountExpiredException) {
-                        result.setMessage("账户过期，请联系管理员!");
-                    } else if (exception instanceof DisabledException) {
-                        result.setMessage("账户被禁用，请联系管理员!");
-                    } else if (exception instanceof BadCredentialsException) {
+                    if (exception instanceof BadCredentialsException) {
                         result.setMessage("用户名或者密码输入错误，请重新输入!");
                     }
                     HttpUtils.write(response, result);
