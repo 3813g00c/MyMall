@@ -2,7 +2,7 @@ package com.ywxiang.mall.service.impl;
 
 import com.ywxiang.mall.bo.AdminUserDetails;
 import com.ywxiang.mall.mapper.UmsAdminMapper;
-import com.ywxiang.mall.mapper.UmsAdminRoleRelationDao;
+import com.ywxiang.mall.dao.UmsAdminRoleRelationDao;
 import com.ywxiang.mall.model.UmsAdmin;
 import com.ywxiang.mall.model.UmsAdminExample;
 import com.ywxiang.mall.model.UmsResource;
@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

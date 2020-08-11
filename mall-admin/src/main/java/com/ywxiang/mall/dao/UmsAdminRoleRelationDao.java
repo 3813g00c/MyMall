@@ -1,9 +1,7 @@
-package com.ywxiang.mall.mapper;
+package com.ywxiang.mall.dao;
 
-import com.ywxiang.mall.model.UmsPermission;
 import com.ywxiang.mall.model.UmsResource;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import com.ywxiang.mall.model.UmsRole;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,10 +11,19 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/8/8 下午11:25
  */
-@Mapper
+@Repository
 public interface UmsAdminRoleRelationDao {
     /**
      * 获取指定用户的可访问资源
+     * @param adminId
+     * @return
      */
     List<UmsResource> getResourceList(Long adminId);
+
+    /**
+     * 获取用户的角色
+     * @param adminId
+     * @return
+     */
+    List<UmsRole> getRoleList(Long adminId);
 }
