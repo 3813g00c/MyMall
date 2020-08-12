@@ -1,5 +1,6 @@
 package com.ywxiang.mall.service.impl;
 
+import com.ywxiang.mall.dao.UmsAdminRoleRelationDao;
 import com.ywxiang.mall.mapper.UmsAdminMapper;
 import com.ywxiang.mall.model.UmsAdmin;
 import com.ywxiang.mall.model.UmsAdminExample;
@@ -20,6 +21,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Autowired
     UmsAdminMapper adminMapper;
 
+    @Autowired
+    UmsAdminRoleRelationDao adminRoleRelationDao;
+
     @Override
     public UmsAdmin getAdminByUsername(String username) {
         UmsAdminExample example = new UmsAdminExample();
@@ -33,6 +37,6 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public List<UmsRole> getRoleList(Long adminId) {
-        return null;
+        return adminRoleRelationDao.getRoleList(adminId);
     }
 }
