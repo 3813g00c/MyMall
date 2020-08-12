@@ -4,6 +4,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author ywxiang
  * @date 2020/8/7 下午8:38
@@ -19,11 +21,22 @@ public class SecurityUtils {
         Authentication authentication = getAuthentication();
         if(authentication != null) {
             Object principal = authentication.getPrincipal();
-            if(principal != null && principal instanceof UserDetails) {
-                username = ((UserDetails) principal).getUsername();
+            if(principal != null) {
+                username = (String) principal;
             }
         }
         return username;
+    }
+
+    /**
+     * 获取令牌进行认证
+     * @param request
+     */
+    public static void checkAuthentication(HttpServletRequest request) {
+        // 获取令牌并根据令牌获取登录认证信息
+        Authentication authentication = JwtTokenUtils.getAuthenticationFromToken(request);
+        // 设置登录认证信息到上下文
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     /**

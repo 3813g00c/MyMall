@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -97,47 +96,48 @@ public class JwtTokenUtils implements Serializable {
         return username;
     }
 
-//    /**
-//     * 根据请求令牌获取登录认证信息
-//     * @param request 令牌
-//     * @return 用户名
-//     */
-//    public static Authentication getAuthenticationeFromToken(HttpServletRequest request) {
-//        Authentication authentication = null;
-//        // 获取请求携带的令牌
-//        String token = JwtTokenUtils.getToken(request);
-//        if(token != null) {
-//            // 请求令牌不能为空
-//            if(SecurityUtils.getAuthentication() == null) {
-//                // 上下文中Authentication为空
-//                Claims claims = getClaimsFromToken(token);
-//                if(claims == null) {
-//                    return null;
-//                }
-//                String username = claims.getSubject();
-//                if(username == null) {
-//                    return null;
-//                }
-//                if(isTokenExpired(token)) {
-//                    return null;
-//                }
-//                Object authors = claims.get(AUTHORITIES);
-//                List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-//                if (authors != null && authors instanceof List) {
-//                    for (Object object : (List) authors) {
+    /**
+     * 根据请求令牌获取登录认证信息
+     * @param request 令牌
+     * @return 用户名
+     */
+    public static Authentication getAuthenticationFromToken(HttpServletRequest request) {
+        Authentication authentication = null;
+        // 获取请求携带的令牌
+        String token = JwtTokenUtils.getToken(request);
+        if(token != null) {
+            // 请求令牌不能为空
+            if(SecurityUtils.getAuthentication() == null) {
+                // 上下文中Authentication为空
+                Claims claims = getClaimsFromToken(token);
+                if(claims == null) {
+                    return null;
+                }
+                String username = claims.getSubject();
+                if(username == null) {
+                    return null;
+                }
+                if(isTokenExpired(token)) {
+                    return null;
+                }
+                Object authors = claims.get(AUTHORITIES);
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                if (authors != null && authors instanceof List) {
+                    for (Object object : (List) authors) {
+                        authorities.add((GrantedAuthority) () -> ((String) ((Map) object).get("authority")));
 //                        authorities.add(new GrantedAuthorityImpl((String) ((Map) object).get("authority")));
-//                    }
-//                }
-//                authentication = new JwtAuthenticatioToken(username, null, authorities, token);
-//            } else {
-//                if(validateToken(token, SecurityUtils.getUsername())) {
-//                    // 如果上下文中Authentication非空，且请求令牌合法，直接返回当前登录认证信息
-//                    authentication = SecurityUtils.getAuthentication();
-//                }
-//            }
-//        }
-//        return authentication;
-//    }
+                    }
+                }
+                authentication = new JwtAuthenticatioToken(username, null, authorities, token);
+            } else {
+                if(validateToken(token, SecurityUtils.getUsername())) {
+                    // 如果上下文中Authentication非空，且请求令牌合法，直接返回当前登录认证信息
+                    authentication = SecurityUtils.getAuthentication();
+                }
+            }
+        }
+        return authentication;
+    }
 
     /**
      * 从令牌中获取数据声明
