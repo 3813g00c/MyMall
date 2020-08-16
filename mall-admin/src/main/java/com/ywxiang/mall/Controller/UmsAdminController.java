@@ -34,6 +34,7 @@ public class UmsAdminController {
     @Autowired
     private UmsRoleService roleService;
     @ApiOperation(value = "获取当前登录用户信息")
+
     @GetMapping("/info")
     public CommonResult getAdminInfo() {
         String username = SecurityUtils.getUsername();

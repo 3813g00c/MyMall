@@ -5,7 +5,6 @@ import cn.hutool.core.util.URLUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ywxiang.mall.bo.WebLog;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.marker.Markers;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -13,6 +12,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -37,8 +38,9 @@ import java.util.Map;
 @Aspect
 @Component
 @Order(1)
-@Slf4j
 public class WebLogAspect {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebLogAspect.class);
 
     @Pointcut("execution(public * com.ywxiang.mall.Controller.*.*(..))")
     public void webLog(){}
@@ -49,7 +51,7 @@ public class WebLogAspect {
         // 获取当前请求对象
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null){
-            log.warn("请求对象为空");
+            LOGGER.warn("请求对象为空");
         }
         HttpServletRequest request = attributes.getRequest();
         WebLog webLog = new WebLog();
@@ -68,6 +70,7 @@ public class WebLogAspect {
         webLog.setMethod(request.getMethod());
         webLog.setResult(result);
         webLog.setSpendTime((int) (endTime - startTime));
+        webLog.setParameter(getParameter(method, joinPoint.getArgs()));
         webLog.setStartTime(startTime);
         webLog.setUri(request.getRequestURI());
         webLog.setUrl(request.getRequestURL().toString());
@@ -77,7 +80,7 @@ public class WebLogAspect {
         logMap.put("parameter",webLog.getParameter());
         logMap.put("spendTime",webLog.getSpendTime());
         logMap.put("description",webLog.getDescription());
-        log.info(Markers.appendEntries(logMap), JSONObject.toJSONString(webLog));
+        LOGGER.info(Markers.appendEntries(logMap), JSONObject.toJSONString(webLog));
         return result;
     }
 
