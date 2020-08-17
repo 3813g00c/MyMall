@@ -122,7 +122,7 @@ public class JwtTokenUtils implements Serializable {
                 }
                 Object authors = claims.get(AUTHORITIES);
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                if (authors != null && authors instanceof List) {
+                if (authors instanceof List) {
                     for (Object object : (List) authors) {
                         authorities.add((GrantedAuthority) () -> ((String) ((Map) object).get("authority")));
                     }

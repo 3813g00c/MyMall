@@ -50,4 +50,6 @@ public class UmsAdminController {
         }
         return CommonResult.success(data);
     }
+
+//    public CommonResult list()
 }
