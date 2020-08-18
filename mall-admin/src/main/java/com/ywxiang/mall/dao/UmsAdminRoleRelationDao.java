@@ -2,6 +2,7 @@ package com.ywxiang.mall.dao;
 
 import com.ywxiang.mall.model.UmsResource;
 import com.ywxiang.mall.model.UmsRole;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,5 +26,6 @@ public interface UmsAdminRoleRelationDao {
      * @param adminId
      * @return
      */
-    List<UmsRole> getRoleList(Long adminId);
+    List<UmsRole> getRoleList(@Param("adminId") Long adminId);
+
 }

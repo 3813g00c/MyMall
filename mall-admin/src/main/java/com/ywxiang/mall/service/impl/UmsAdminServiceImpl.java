@@ -1,5 +1,6 @@
 package com.ywxiang.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.ywxiang.mall.dao.UmsAdminRoleRelationDao;
 import com.ywxiang.mall.mapper.UmsAdminMapper;
 import com.ywxiang.mall.model.UmsAdmin;
@@ -8,6 +9,7 @@ import com.ywxiang.mall.model.UmsRole;
 import com.ywxiang.mall.service.UmsAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -38,5 +40,21 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public List<UmsRole> getRoleList(Long adminId) {
         return adminRoleRelationDao.getRoleList(adminId);
+    }
+
+    @Override
+    public List<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        UmsAdminExample adminExample = new UmsAdminExample();
+        UmsAdminExample.Criteria criteria = adminExample.createCriteria();
+        if (!StringUtils.isEmpty(keyword)){
+            criteria.andUsernameLike("%" + keyword + "%");
+            adminExample.or(adminExample.createCriteria().andNickNameLike("%" + keyword + "%"));
+        }
+        List<UmsAdmin> adminList = adminMapper.selectByExample(adminExample);
+        for (UmsAdmin admin : adminList){
+            admin.setPassword(null);
+        }
+        return adminList;
     }
 }

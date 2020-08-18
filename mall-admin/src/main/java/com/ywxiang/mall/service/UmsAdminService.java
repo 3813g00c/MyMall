@@ -19,10 +19,21 @@ public interface UmsAdminService {
      */
 
     UmsAdmin getAdminByUsername(String username);
+
     /**
      * 获取用户的角色
      * @param adminId
      * @return
      */
     List<UmsRole> getRoleList(Long adminId);
+
+    /**
+     * 根据用户名查询用户
+     *
+     * @param keyword
+     * @param pageSize
+     * @param pageNum
+     * @return
+     */
+    List<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum);
 }

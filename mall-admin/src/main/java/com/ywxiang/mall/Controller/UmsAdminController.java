@@ -1,6 +1,7 @@
 package com.ywxiang.mall.Controller;
 
 import cn.hutool.core.collection.CollUtil;
+import com.ywxiang.mall.api.CommonPage;
 import com.ywxiang.mall.api.CommonResult;
 import com.ywxiang.mall.model.UmsAdmin;
 import com.ywxiang.mall.model.UmsRole;
@@ -10,9 +11,7 @@ import com.ywxiang.mall.util.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,5 +50,19 @@ public class UmsAdminController {
         return CommonResult.success(data);
     }
 
-//    public CommonResult list()
+    @ApiOperation("根据用户名或姓名分页获取用户列表")
+    @GetMapping("/list")
+    public CommonResult list(@RequestParam(value = "keyword", required = false) String keyword,
+                             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum){
+        List<UmsAdmin> adminList = adminService.list(keyword, pageSize, pageNum);
+        return CommonResult.success(CommonPage.restPage(adminList));
+    }
+
+    @ApiOperation("获取指定用户的角色")
+    @GetMapping("/role/{adminId}")
+    public CommonResult<List<UmsRole>> getRoleList(@PathVariable Long adminId) {
+        List<UmsRole> roleList = adminService.getRoleList(adminId);
+        return CommonResult.success(roleList);
+    }
 }
