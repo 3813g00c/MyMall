@@ -5,7 +5,7 @@
         Insert Into ums_admin_role_relation (admin_id, role_id) VALUES
             <foreach collection="list" separator="," item="item" index="index">
                 (#{item.adminId, jdbcType=BIGINT},
-                (#{item.roleId, jdbcType=BIGINT},)
+                #{item.roleId, jdbcType=BIGINT})
             </foreach>
     </insert>
 

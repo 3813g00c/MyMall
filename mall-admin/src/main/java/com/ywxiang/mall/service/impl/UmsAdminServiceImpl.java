@@ -3,10 +3,12 @@ package com.ywxiang.mall.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.ywxiang.mall.dao.UmsAdminRoleRelationDao;
+import com.ywxiang.mall.dto.UmsAdminParam;
 import com.ywxiang.mall.mapper.UmsAdminMapper;
 import com.ywxiang.mall.mapper.UmsAdminRoleRelationMapper;
 import com.ywxiang.mall.model.*;
 import com.ywxiang.mall.service.UmsAdminService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,6 +71,25 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
+    public UmsAdmin addAdmin(UmsAdminParam adminParam) {
+        UmsAdmin umsAdmin = new UmsAdmin();
+        BeanUtils.copyProperties(adminParam, umsAdmin);
+        umsAdmin.setCreateTime(new Date());
+        // 查询是否同名
+        UmsAdminExample example = new UmsAdminExample();
+        example.createCriteria().andUsernameEqualTo(umsAdmin.getUsername());
+        List<UmsAdmin> umsAdminList = adminMapper.selectByExample(example);
+        if (umsAdminList.isEmpty()){
+            // 加密
+            String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
+            umsAdmin.setPassword(encodePassword);
+            adminMapper.insert(umsAdmin);
+            return umsAdmin;
+        }
+        return null;
+    }
+
+    @Override
     public int update(Long id, UmsAdmin admin) {
         admin.setId(id);
         UmsAdmin rawAdmin = adminMapper.selectByPrimaryKey(id);
@@ -102,5 +124,10 @@ public class UmsAdminServiceImpl implements UmsAdminService {
             adminRoleRelationDao.insertList(list);
         }
         return count;
+    }
+
+    @Override
+    public int delete(Long id) {
+        return adminMapper.deleteByPrimaryKey(id);
     }
 }

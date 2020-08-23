@@ -3,6 +3,7 @@ package com.ywxiang.mall.Controller;
 import cn.hutool.core.collection.CollUtil;
 import com.ywxiang.mall.api.CommonPage;
 import com.ywxiang.mall.api.CommonResult;
+import com.ywxiang.mall.dto.UmsAdminParam;
 import com.ywxiang.mall.model.UmsAdmin;
 import com.ywxiang.mall.model.UmsRole;
 import com.ywxiang.mall.service.UmsAdminService;
@@ -33,8 +34,8 @@ public class UmsAdminController {
 
     @Autowired
     private UmsRoleService roleService;
-    @ApiOperation(value = "获取当前登录用户信息")
 
+    @ApiOperation(value = "获取当前登录用户信息")
     @GetMapping("/info")
     public CommonResult getAdminInfo() {
         String username = SecurityUtils.getUsername();
@@ -67,6 +68,16 @@ public class UmsAdminController {
         return CommonResult.success(roleList);
     }
 
+    @ApiOperation("添加账号")
+    @PostMapping("/register")
+    public CommonResult<UmsAdmin> register(@RequestBody UmsAdminParam admin){
+        UmsAdmin umsAdmin = adminService.addAdmin(admin);
+        if (umsAdmin == null) {
+            return CommonResult.failed();
+        }
+        return CommonResult.success(umsAdmin);
+    }
+
     @ApiOperation("修改账号状态")
     @PostMapping("/updateStatus/{id}")
     public CommonResult updateStatus(@PathVariable long id, @RequestParam(value = "status") Integer status){
@@ -88,4 +99,25 @@ public class UmsAdminController {
         }
         return CommonResult.failed();
     }
+
+    @ApiOperation("修改指定用户信息")
+    @PostMapping("/update/{id}")
+    public CommonResult update(@PathVariable Long id, @RequestBody UmsAdmin admin) {
+        int count = adminService.update(id, admin);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("删除指定用户信息")
+    @PostMapping("/delete/{id}")
+    public CommonResult delete(@PathVariable Long id){
+        int count = adminService.delete(id);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
 }
+
