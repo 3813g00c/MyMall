@@ -22,4 +22,19 @@ public interface UmsRoleService {
      * @return
      */
     List<UmsRole> list();
+
+    /**
+     * 分页查询所有角色
+     * @return
+     */
+    List<UmsRole> listByPage(String keyword, Integer pageSize, Integer pageNum);
+
+    /**
+     * 更新角色
+     *
+     * @param id
+     * @param role
+     * @return
+     */
+    int update(Long id, UmsRole role);
 }
