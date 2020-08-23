@@ -11,6 +11,7 @@ import com.ywxiang.mall.util.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -64,5 +65,27 @@ public class UmsAdminController {
     public CommonResult<List<UmsRole>> getRoleList(@PathVariable Long adminId) {
         List<UmsRole> roleList = adminService.getRoleList(adminId);
         return CommonResult.success(roleList);
+    }
+
+    @ApiOperation("修改账号状态")
+    @PostMapping("/updateStatus/{id}")
+    public CommonResult updateStatus(@PathVariable long id, @RequestParam(value = "status") Integer status){
+        UmsAdmin umsAdmin = new UmsAdmin();
+        umsAdmin.setStatus(status);
+        int count = adminService.update(id, umsAdmin);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("给用户分配角色")
+    @PostMapping("/role/update")
+    public CommonResult updateRole(@RequestParam("adminId") Long adminId, @RequestParam("roleIds") List<Long> roleIds){
+        int count = adminService.updateRole(adminId, roleIds);
+        if (count >= 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
     }
 }

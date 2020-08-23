@@ -1,5 +1,6 @@
 package com.ywxiang.mall.dao;
 
+import com.ywxiang.mall.model.UmsAdminRoleRelation;
 import com.ywxiang.mall.model.UmsResource;
 import com.ywxiang.mall.model.UmsRole;
 import org.apache.ibatis.annotations.Param;
@@ -27,5 +28,12 @@ public interface UmsAdminRoleRelationDao {
      * @return
      */
     List<UmsRole> getRoleList(@Param("adminId") Long adminId);
+
+    /**
+     * 批量插入用户与角色的关系
+     * @param adminRoleRelationList
+     * @return
+     */
+    int insertList(@Param("list")List<UmsAdminRoleRelation> adminRoleRelationList);
 
 }

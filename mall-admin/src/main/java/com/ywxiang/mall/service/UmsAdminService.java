@@ -2,6 +2,7 @@ package com.ywxiang.mall.service;
 
 import com.ywxiang.mall.model.UmsAdmin;
 import com.ywxiang.mall.model.UmsRole;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,4 +37,22 @@ public interface UmsAdminService {
      * @return
      */
     List<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum);
+
+    /**
+     * 修改用户信息
+     * @param id
+     * @param admin
+     * @return
+     */
+    int update(Long id, UmsAdmin admin);
+
+    /**
+     * 修改用户角色关系
+     *
+     * @param adminId
+     * @param roleIds
+     * @return
+     */
+    @Transactional
+    int updateRole(Long adminId, List<Long> roleIds);
 }

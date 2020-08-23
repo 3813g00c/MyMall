@@ -16,6 +16,7 @@ import java.util.List;
 public interface UmsRoleDao {
     /**
      * 根据Id获取菜单
+     *
      * @param adminId
      * @return
      */
