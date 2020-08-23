@@ -103,6 +103,7 @@
         <mall-security.version>1.0-SNAPSHOT</mall-security.version>
         <jaxb.version>2.3.0</jaxb.version>
         <fastjson.version>1.2.70</fastjson.version>
+        <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
     </properties>
 
     <dependencyManagement>
@@ -165,6 +166,11 @@
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>
                 <version>${swagger-models.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>swagger-bootstrap-ui</artifactId>
+                <version>${swagger-bootstrap-ui.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger</groupId>
