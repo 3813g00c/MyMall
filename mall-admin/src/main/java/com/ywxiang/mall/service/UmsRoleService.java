@@ -2,6 +2,7 @@ package com.ywxiang.mall.service;
 
 import com.ywxiang.mall.model.UmsMenu;
 import com.ywxiang.mall.model.UmsRole;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,4 +38,21 @@ public interface UmsRoleService {
      * @return
      */
     int update(Long id, UmsRole role);
+
+    /**
+     * 获取角色相关菜单
+     *
+     * @param roleId
+     * @return
+     */
+    List<UmsMenu> listMenu(Long roleId);
+
+    /**
+     * 给角色分配菜单
+     * @param roleId
+     * @param menuIds
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    int allocMenu(Long roleId, List<Long> menuIds);
 }

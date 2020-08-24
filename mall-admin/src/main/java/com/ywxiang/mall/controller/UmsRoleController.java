@@ -2,6 +2,7 @@ package com.ywxiang.mall.controller;
 
 import com.ywxiang.mall.api.CommonPage;
 import com.ywxiang.mall.api.CommonResult;
+import com.ywxiang.mall.model.UmsMenu;
 import com.ywxiang.mall.model.UmsRole;
 import com.ywxiang.mall.service.UmsRoleService;
 import io.swagger.annotations.Api;
@@ -51,5 +52,19 @@ public class UmsRoleController {
             return CommonResult.success(count);
         }
         return CommonResult.failed();
+    }
+
+    @ApiOperation("获取角色对于的菜单")
+    @GetMapping("/listMenu/{roleId}")
+    public CommonResult listMenu(@PathVariable Long roleId){
+        List<UmsMenu> roleList = roleService.listMenu(roleId);
+        return CommonResult.success(roleList);
+    }
+
+    @ApiOperation("给角色分配菜单")
+    @PostMapping("/allowMenu")
+    public CommonResult allowMenu(@RequestParam Long roleId, @RequestParam List<Long> menuIds) {
+        int count = roleService.allocMenu(roleId, menuIds);
+        return CommonResult.success(count);
     }
 }

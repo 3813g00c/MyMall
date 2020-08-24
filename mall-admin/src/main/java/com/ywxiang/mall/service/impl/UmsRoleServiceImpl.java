@@ -3,10 +3,11 @@ package com.ywxiang.mall.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.ywxiang.mall.dao.UmsRoleDao;
 import com.ywxiang.mall.mapper.UmsRoleMapper;
-import com.ywxiang.mall.model.UmsMenu;
-import com.ywxiang.mall.model.UmsRole;
-import com.ywxiang.mall.model.UmsRoleExample;
+import com.ywxiang.mall.mapper.UmsRoleMenuRelationMapper;
+import com.ywxiang.mall.mapper.UmsRoleResourceRelationMapper;
+import com.ywxiang.mall.model.*;
 import com.ywxiang.mall.service.UmsRoleService;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,6 +26,12 @@ public class UmsRoleServiceImpl implements UmsRoleService {
 
     @Autowired
     UmsRoleMapper roleMapper;
+
+    @Autowired
+    UmsRoleResourceRelationMapper roleResourceRelationMapper;
+
+    @Autowired
+    UmsRoleMenuRelationMapper roleMenuRelationMapper;
 
     @Override
     public List<UmsMenu> getMenuList(Long adminId) {
@@ -50,5 +57,26 @@ public class UmsRoleServiceImpl implements UmsRoleService {
     public int update(Long id, UmsRole role) {
         role.setId(id);
         return roleMapper.updateByPrimaryKeySelective(role);
+    }
+
+    @Override
+    public List<UmsMenu> listMenu(Long roleId) {
+        return roleDao.getMenuListByRoleId(roleId);
+    }
+
+    @Override
+    public int allocMenu(Long roleId, List<Long> menuIds) {
+        // 先删除原有的关系
+        UmsRoleMenuRelationExample example = new UmsRoleMenuRelationExample();
+        example.createCriteria().andRoleIdEqualTo(roleId);
+        roleMenuRelationMapper.deleteByExample(example);
+        // 插入新的关系
+        for (Long menuId : menuIds) {
+            UmsRoleMenuRelation roleMenuRelation = new UmsRoleMenuRelation();
+            roleMenuRelation.setRoleId(roleId);
+            roleMenuRelation.setMenuId(menuId);
+            roleMenuRelationMapper.insert(roleMenuRelation);
+        }
+        return menuIds.size();
     }
 }
