@@ -62,7 +62,7 @@ public class UmsRoleController {
     }
 
     @ApiOperation("给角色分配菜单")
-    @PostMapping("/allowMenu")
+    @PostMapping("/allocMenu")
     public CommonResult allowMenu(@RequestParam Long roleId, @RequestParam List<Long> menuIds) {
         int count = roleService.allocMenu(roleId, menuIds);
         return CommonResult.success(count);
