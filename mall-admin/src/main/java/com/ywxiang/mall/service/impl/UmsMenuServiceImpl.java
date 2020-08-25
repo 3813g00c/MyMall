@@ -1,5 +1,6 @@
 package com.ywxiang.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.ywxiang.mall.dto.UmsMenuNode;
 import com.ywxiang.mall.mapper.UmsMenuMapper;
 import com.ywxiang.mall.model.UmsMenu;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,47 @@ public class UmsMenuServiceImpl implements UmsMenuService {
 
     @Autowired
     UmsMenuMapper menuMapper;
+
+    @Override
+    public List<UmsMenu> list(Long parentId, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        UmsMenuExample example = new UmsMenuExample();
+        example.setOrderByClause("sort desc");
+        example.createCriteria().andParentIdEqualTo(parentId);
+        return menuMapper.selectByExample(example);
+    }
+
+    @Override
+    public int create(UmsMenu umsMenu) {
+        umsMenu.setCreateTime(new Date());
+        updateLevel(umsMenu);
+        return menuMapper.insert(umsMenu);
+    }
+
+    @Override
+    public int update(Long id, UmsMenu umsMenu) {
+        umsMenu.setId(id);
+        updateLevel(umsMenu);
+        return menuMapper.updateByPrimaryKeySelective(umsMenu);
+    }
+
+    @Override
+    public UmsMenu getItem(Long id) {
+        return menuMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int delete(Long id) {
+        return menuMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int updateHidden(Long id, Integer hidden) {
+        UmsMenu umsMenu = new UmsMenu();
+        umsMenu.setId(id);
+        umsMenu.setHidden(hidden);
+        return menuMapper.updateByPrimaryKeySelective(umsMenu);
+    }
 
     @Override
     public List<UmsMenuNode> treeList() {
@@ -46,5 +89,24 @@ public class UmsMenuServiceImpl implements UmsMenuService {
                 .map(subMenu -> covertMenuNode(subMenu, menuList)).collect(Collectors.toList());
         node.setChildren(children);
         return node;
+    }
+
+    /**
+     * 修改菜单层级
+     * @param umsMenu
+     */
+    private void updateLevel(UmsMenu umsMenu) {
+        if (umsMenu.getParentId() == 0) {
+            //没有父菜单时为一级菜单
+            umsMenu.setLevel(0);
+        } else {
+            //有父菜单时选择根据父菜单level设置
+            UmsMenu parentMenu = menuMapper.selectByPrimaryKey(umsMenu.getParentId());
+            if (parentMenu != null) {
+                umsMenu.setLevel(parentMenu.getLevel() + 1);
+            } else {
+                umsMenu.setLevel(0);
+            }
+        }
     }
 }
