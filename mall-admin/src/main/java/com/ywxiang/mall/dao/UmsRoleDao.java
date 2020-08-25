@@ -1,6 +1,7 @@
 package com.ywxiang.mall.dao;
 
 import com.ywxiang.mall.model.UmsMenu;
+import com.ywxiang.mall.model.UmsResource;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +29,11 @@ public interface UmsRoleDao {
      * @return
      */
     List<UmsMenu> getMenuListByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 根据角色id获得菜单
+     * @param roleId
+     * @return
+     */
+    List<UmsResource> getResourceListByRoleId(@Param("roleId") Long roleId);
 }

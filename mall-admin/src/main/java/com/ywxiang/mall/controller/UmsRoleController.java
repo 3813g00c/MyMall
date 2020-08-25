@@ -3,6 +3,7 @@ package com.ywxiang.mall.controller;
 import com.ywxiang.mall.api.CommonPage;
 import com.ywxiang.mall.api.CommonResult;
 import com.ywxiang.mall.model.UmsMenu;
+import com.ywxiang.mall.model.UmsResource;
 import com.ywxiang.mall.model.UmsRole;
 import com.ywxiang.mall.service.UmsRoleService;
 import io.swagger.annotations.Api;
@@ -61,10 +62,58 @@ public class UmsRoleController {
         return CommonResult.success(roleList);
     }
 
+    @ApiOperation("获得角色对应的资源")
+    @GetMapping("/listResource/{roleId}")
+    public CommonResult listResource(@PathVariable Long roleId){
+        List<UmsResource> resourceList = roleService.listResource(roleId);
+        return CommonResult.success(resourceList);
+    }
+
     @ApiOperation("给角色分配菜单")
     @PostMapping("/allocMenu")
     public CommonResult allowMenu(@RequestParam Long roleId, @RequestParam List<Long> menuIds) {
         int count = roleService.allocMenu(roleId, menuIds);
         return CommonResult.success(count);
     }
+
+    @ApiOperation("给角色分配资源")
+    @PostMapping("/allocResource")
+    public CommonResult allocResource(@RequestParam Long roleId, @RequestParam List<Long> resourceIds) {
+        int count = roleService.allocResource(roleId, resourceIds);
+        return CommonResult.success(count);
+    }
+
+    @ApiOperation("修改角色")
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult update(@PathVariable Long id, @RequestBody UmsRole role) {
+        int count = roleService.update(id, role);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("添加角色")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult create(@RequestBody UmsRole role) {
+        int count = roleService.create(role);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("批量删除角色")
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult delete(@RequestParam("ids") List<Long> ids) {
+        int count = roleService.delete(ids);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
 }

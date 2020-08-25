@@ -1,6 +1,7 @@
 package com.ywxiang.mall.service;
 
 import com.ywxiang.mall.model.UmsMenu;
+import com.ywxiang.mall.model.UmsResource;
 import com.ywxiang.mall.model.UmsRole;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,4 +56,34 @@ public interface UmsRoleService {
      */
     @Transactional(rollbackFor = Exception.class)
     int allocMenu(Long roleId, List<Long> menuIds);
+
+    /**
+     * 获得角色对于资源
+     * @param roleId
+     * @return
+     */
+    List<UmsResource> listResource(Long roleId);
+
+    /**
+     * 给角色分配资源
+     * @param roleId
+     * @param resourceIds
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    int allocResource(Long roleId, List<Long> resourceIds);
+
+    /**
+     * 添加角色
+     * @param role
+     * @return
+     */
+    int create(UmsRole role);
+
+    /**
+     * 删除角色
+     * @param ids
+     * @return
+     */
+    int delete(List<Long> ids);
 }
