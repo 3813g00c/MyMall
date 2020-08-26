@@ -1,12 +1,14 @@
 package com.ywxiang.mall.config;
 
 import com.ywxiang.mall.api.CommonResult;
+import com.ywxiang.mall.component.DynamicSecurityMetadataSource;
 import com.ywxiang.mall.component.JwtAuthenticationFilter;
 import com.ywxiang.mall.component.JwtLoginFilter;
 import com.ywxiang.mall.util.JwtTokenUtils;
 import com.ywxiang.mall.utils.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -92,4 +94,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @ConditionalOnBean(name = "dynamicSecurityService")
+    @Bean
+    public DynamicSecurityMetadataSource dynamicSecurityMetadataSource() {
+        return new DynamicSecurityMetadataSource();
+    }
 }
