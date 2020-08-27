@@ -63,4 +63,5 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
     public SecurityMetadataSource obtainSecurityMetadataSource() {
         return dynamicSecurityMetadataSource;
     }
+
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class MallSecurityConfig extends SpringSecurityConfig{
+public class MallSecurityConfig extends SpringSecurityConfig {
 
     @Autowired
     private UmsResourceService resourceService;
