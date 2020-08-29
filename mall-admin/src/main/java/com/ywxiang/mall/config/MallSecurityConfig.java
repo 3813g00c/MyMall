@@ -1,14 +1,19 @@
 package com.ywxiang.mall.config;
 
+import com.ywxiang.mall.component.DynamicSecurityFilter;
+import com.ywxiang.mall.component.DynamicSecurityMetadataSource;
 import com.ywxiang.mall.component.DynamicSecurityService;
 import com.ywxiang.mall.model.UmsResource;
 import com.ywxiang.mall.service.UmsResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Map;

@@ -1,15 +1,14 @@
 package com.ywxiang.mall.config;
 
 import com.ywxiang.mall.api.CommonResult;
-import com.ywxiang.mall.component.DynamicSecurityMetadataSource;
-import com.ywxiang.mall.component.JwtAuthenticationFilter;
-import com.ywxiang.mall.component.JwtLoginFilter;
+import com.ywxiang.mall.component.*;
 import com.ywxiang.mall.util.JwtTokenUtils;
 import com.ywxiang.mall.utils.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.HashMap;
@@ -32,6 +32,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${jwt.tokenHead}")
     private String tokenHead;
+
+    @Autowired(required = false)
+    private DynamicSecurityService dynamicSecurityService;
 
     @Autowired
     IgnoreUrlsConfig ignoreUrlsConfig;
@@ -58,6 +61,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
         // 访问控制时登录状态检查过滤器
         http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        if (dynamicSecurityService != null) {
+            registry.and().addFilterBefore(dynamicSecurityFilter(), FilterSecurityInterceptor.class);
+        }
     }
 
     public JwtLoginFilter jwtLoginFilter() throws Exception {
@@ -98,5 +104,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DynamicSecurityMetadataSource dynamicSecurityMetadataSource() {
         return new DynamicSecurityMetadataSource();
+    }
+
+    @ConditionalOnBean(name = "dynamicSecurityService")
+    @Bean
+    public DynamicSecurityFilter dynamicSecurityFilter() {
+        return new DynamicSecurityFilter();
+    }
+
+    @ConditionalOnBean(name = "dynamicSecurityService")
+    @Bean
+    public DynamicAccessDecisionManager dynamicAccessDecisionManager() {
+        return new DynamicAccessDecisionManager();
     }
 }

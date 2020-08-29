@@ -28,6 +28,11 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
     @Autowired
     private IgnoreUrlsConfig ignoreUrlsConfig;
 
+    @Autowired
+    public void setMyAccessDecisionManager(DynamicAccessDecisionManager dynamicAccessDecisionManager) {
+        super.setAccessDecisionManager(dynamicAccessDecisionManager);
+    }
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
