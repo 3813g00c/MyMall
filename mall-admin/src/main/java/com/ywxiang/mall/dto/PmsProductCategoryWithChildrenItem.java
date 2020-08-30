@@ -12,9 +12,9 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/8/30 下午3:00
  */
-@Getter
-@Setter
-public class PmsProductCategoryWithChildrenItem {
+public class PmsProductCategoryWithChildrenItem extends PmsProductCategory{
+    @Getter
+    @Setter
     @ApiModelProperty("子集分类")
     private List<PmsProductCategory> children;
 }
