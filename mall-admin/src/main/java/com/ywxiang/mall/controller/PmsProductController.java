@@ -25,7 +25,7 @@ public class PmsProductController {
     PmsProductService productService;
 
     @ApiOperation("查询商品")
-    @PostMapping("/list")
+    @GetMapping("/list")
     public CommonResult getList(PmsProductQueryParam productQueryParam,
                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
