@@ -39,7 +39,7 @@ public class PmsBrandController {
 
     @ApiOperation("获取所有品牌列表")
     @GetMapping("/listAll")
-    public CommonResult getList(){
+    public CommonResult getList() {
         return CommonResult.success(brandService.listAllBrand());
     }
 
@@ -56,7 +56,7 @@ public class PmsBrandController {
     @ApiOperation("修改品牌")
     @PostMapping("/update/{id}")
     public CommonResult update(@PathVariable("id") Long id, @Validated @RequestBody PmsBrandParam brandParam,
-                               BindingResult result){
+                               BindingResult result) {
         int count = brandService.updateBrand(id, brandParam);
         if (count == 1) {
             return CommonResult.success(count);

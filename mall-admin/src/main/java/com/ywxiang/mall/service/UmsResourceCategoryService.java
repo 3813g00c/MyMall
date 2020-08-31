@@ -15,4 +15,5 @@ public interface UmsResourceCategoryService {
      * @return
      */
     List<UmsResourceCategory> listAll();
+
 }
