@@ -1,16 +1,21 @@
 package com.ywxiang.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ywxiang.mall.dao.PmsProductCategoryAttributeRelationDao;
 import com.ywxiang.mall.dao.PmsProductCategoryDao;
 import com.ywxiang.mall.dto.PmsProductCategoryParam;
 import com.ywxiang.mall.dto.PmsProductCategoryWithChildrenItem;
+import com.ywxiang.mall.mapper.PmsProductCategoryAttributeRelationMapper;
 import com.ywxiang.mall.mapper.PmsProductCategoryMapper;
-import com.ywxiang.mall.model.PmsProductCategory;
+import com.ywxiang.mall.mapper.PmsProductMapper;
+import com.ywxiang.mall.model.*;
 import com.ywxiang.mall.service.PmsProductCategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +31,12 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     PmsProductCategoryDao productCategoryDao;
     @Autowired
     PmsProductCategoryMapper productCategoryMapper;
+    @Autowired
+    PmsProductCategoryAttributeRelationDao productCategoryAttributeRelationDao;
+    @Autowired
+    PmsProductMapper productMapper;
+    @Autowired
+    PmsProductCategoryAttributeRelationMapper productCategoryAttributeRelationMapper;
 
     @Override
     public List<PmsProductCategoryWithChildrenItem> listWithChildren() {
@@ -43,43 +54,73 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         // 创建筛选属性关联
         List<Long> productAttributeIdList = productCategoryParam.getProductAttributeIdList();
         if (!CollectionUtils.isEmpty(productAttributeIdList)) {
-
+            insertRelationList(productCategory.getId(), productAttributeIdList);
         }
-        return 0;
+        return count;
     }
 
     @Override
     public int update(Long id, PmsProductCategoryParam productCategoryParam) {
-        return 0;
+        PmsProductCategory productCategory = new PmsProductCategory();
+        productCategory.setId(id);
+        BeanUtils.copyProperties(productCategoryParam, productCategory);
+        setCategoryLevel(productCategory);
+        // 更新商品分类时要更新商品中的名称
+        PmsProduct product = new PmsProduct();
+        product.setProductCategoryName(productCategory.getName());
+        PmsProductExample example = new PmsProductExample();
+        example.createCriteria().andProductCategoryIdEqualTo(id);
+        productMapper.updateByExampleSelective(product, example);
+        // 更新筛选属性信息
+        PmsProductCategoryAttributeRelationExample relationExample = new PmsProductCategoryAttributeRelationExample();
+        relationExample.createCriteria().andProductCategoryIdEqualTo(id);
+        productCategoryAttributeRelationMapper.deleteByExample(relationExample);
+        if (!CollectionUtils.isEmpty(productCategoryParam.getProductAttributeIdList())) {
+            insertRelationList(id, productCategoryParam.getProductAttributeIdList());
+        }
+        return productCategoryMapper.updateByPrimaryKeySelective(productCategory);
     }
 
     @Override
     public List<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum) {
-        return null;
+        PageHelper.startPage(pageNum, pageSize);
+        PmsProductCategoryExample example = new PmsProductCategoryExample();
+        example.setOrderByClause("sort desc");
+        example.createCriteria().andParentIdEqualTo(parentId);
+        return productCategoryMapper.selectByExample(example);
     }
 
     @Override
     public int delete(Long id) {
-        return 0;
+        return productCategoryMapper.deleteByPrimaryKey(id);
     }
 
     @Override
     public PmsProductCategory getItem(Long id) {
-        return null;
+        return productCategoryMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public int updateNavStatus(List<Long> ids, Integer navStatus) {
-        return 0;
+        PmsProductCategory productCategory = new PmsProductCategory();
+        productCategory.setNavStatus(navStatus);
+        PmsProductCategoryExample example = new PmsProductCategoryExample();
+        example.createCriteria().andIdIn(ids);
+        return productCategoryMapper.updateByExampleSelective(productCategory, example);
     }
 
     @Override
     public int updateShowStatus(List<Long> ids, Integer showStatus) {
-        return 0;
+        PmsProductCategory productCategory = new PmsProductCategory();
+        productCategory.setShowStatus(showStatus);
+        PmsProductCategoryExample example = new PmsProductCategoryExample();
+        example.createCriteria().andIdIn(ids);
+        return productCategoryMapper.updateByExampleSelective(productCategory, example);
     }
 
     /**
      * 设置商品分类level
+     *
      * @param productCategory
      */
     private void setCategoryLevel(PmsProductCategory productCategory) {
@@ -95,5 +136,22 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
                 productCategory.setLevel(0);
             }
         }
+    }
+
+    /**
+     * 批量插入商品分类与筛选属性关系表
+     *
+     * @param productCategoryId
+     * @param productAttributeIdList
+     */
+    private void insertRelationList(Long productCategoryId, List<Long> productAttributeIdList) {
+        List<PmsProductCategoryAttributeRelation> relationList = new ArrayList<>();
+        for (Long productAttrId : productAttributeIdList) {
+            PmsProductCategoryAttributeRelation relation = new PmsProductCategoryAttributeRelation();
+            relation.setProductAttributeId(productAttrId);
+            relation.setProductCategoryId(productCategoryId);
+            relationList.add(relation);
+        }
+        productCategoryAttributeRelationDao.insertList(relationList);
     }
 }

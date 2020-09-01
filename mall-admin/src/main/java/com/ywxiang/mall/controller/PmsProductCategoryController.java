@@ -1,19 +1,23 @@
 package com.ywxiang.mall.controller;
 
+import com.ywxiang.mall.api.CommonPage;
 import com.ywxiang.mall.api.CommonResult;
+import com.ywxiang.mall.dto.PmsProductCategoryParam;
 import com.ywxiang.mall.dto.PmsProductCategoryWithChildrenItem;
+import com.ywxiang.mall.model.PmsProductCategory;
 import com.ywxiang.mall.service.PmsProductCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * 商品分类Controller
+ *
  * @author ywxiang
  * @date 2020/8/30 下午2:57
  */
@@ -30,5 +34,57 @@ public class PmsProductCategoryController {
     public CommonResult<List<PmsProductCategoryWithChildrenItem>> listWithChildren() {
         List<PmsProductCategoryWithChildrenItem> list = productCategoryService.listWithChildren();
         return CommonResult.success(list);
+    }
+
+    @ApiOperation("添加商品分类")
+    @PostMapping("/create")
+    public CommonResult create(@Validated @RequestBody PmsProductCategoryParam productCategoryParam,
+                               BindingResult result) {
+        int count = productCategoryService.create(productCategoryParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("修改商品分类")
+    @PostMapping("/update/{id}")
+    public CommonResult update(@PathVariable Long id,
+                               @Validated @RequestBody PmsProductCategoryParam productCategoryParam,
+                               BindingResult result) {
+        int count = productCategoryService.update(id, productCategoryParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("分页查询商品分类")
+    @GetMapping("/list/{parentId}")
+    public CommonResult<CommonPage<PmsProductCategory>> getList(@PathVariable Long parentId,
+                                                                @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        List<PmsProductCategory> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum);
+        return CommonResult.success(CommonPage.restPage(productCategoryList));
+    }
+
+    @ApiOperation("根据id获取商品分类")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<PmsProductCategory> getItem(@PathVariable Long id) {
+        PmsProductCategory productCategory = productCategoryService.getItem(id);
+        return CommonResult.success(productCategory);
+    }
+
+    @ApiOperation("修改导航栏显示状态")
+    @RequestMapping(value = "/update/navStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult updateNavStatus(@RequestParam("ids") List<Long> ids, @RequestParam("navStatus") Integer navStatus) {
+        int count = productCategoryService.updateNavStatus(ids, navStatus);
+        if (count > 0) {
+            return CommonResult.success(count);
+        } else {
+            return CommonResult.failed();
+        }
     }
 }
