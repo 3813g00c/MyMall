@@ -27,7 +27,7 @@ public class PmsProductAttributeController {
     PmsProductAttributeService productAttributeService;
 
     @ApiOperation("分页获取属性列表")
-    @PostMapping("/list/{id}")
+    @GetMapping("/list/{id}")
     public CommonResult getList(@PathVariable Long id,
                                 @RequestParam(value = "type") Integer type,
                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,

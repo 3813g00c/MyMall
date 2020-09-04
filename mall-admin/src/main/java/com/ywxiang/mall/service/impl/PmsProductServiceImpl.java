@@ -120,7 +120,7 @@ public class PmsProductServiceImpl implements PmsProductService {
             }
             for (Object item : dateList) {
                 Method setId = item.getClass().getMethod("setId", Long.class);
-                setId.invoke(item, null);
+                setId.invoke(item, (Long) null);
                 Method setProductId = item.getClass().getMethod("setProductId", Long.class);
                 setProductId.invoke(item, productId);
             }
