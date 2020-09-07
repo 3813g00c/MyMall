@@ -6,6 +6,7 @@ import com.ywxiang.mall.model.SmsHomeBrand;
 import com.ywxiang.mall.model.SmsHomeBrandExample;
 import com.ywxiang.mall.service.SmsHomeBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/9/5 下午4:14
  */
+@Service
 public class SmsHomeBrandServiceImpl implements SmsHomeBrandService {
 
     @Autowired
