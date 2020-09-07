@@ -20,7 +20,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/8/30 下午2:35
  */
-@Api(tags = "PmsBrandController", produces = "商品品牌管理")
+@Api(tags = "商品品牌管理")
 @RestController
 @RequestMapping("/brand")
 public class PmsBrandController {

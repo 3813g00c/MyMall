@@ -18,7 +18,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/9/2 下午9:25
  */
-@Api(tags = "PmsProductAttributeController", produces = "商品属性管理")
+@Api(tags = "商品属性管理")
 @RestController
 @RequestMapping("/productAttribute")
 public class PmsProductAttributeController {

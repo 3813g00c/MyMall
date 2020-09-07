@@ -21,7 +21,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/8/30 下午2:57
  */
-@Api(tags = "PmsProductCategoryController", produces = "商品分类管理")
+@Api(tags = "商品分类管理")
 @RestController
 @RequestMapping("/productCategory")
 public class PmsProductCategoryController {

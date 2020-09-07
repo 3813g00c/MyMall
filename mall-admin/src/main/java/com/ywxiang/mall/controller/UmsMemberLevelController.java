@@ -16,7 +16,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/9/4 下午8:50
  */
-@Api(tags = "UmsMemberLevelController", produces = "会员等级管理")
+@Api(tags = "会员等级管理")
 @RestController
 @RequestMapping("/memberLevel")
 public class UmsMemberLevelController {

@@ -19,7 +19,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/8/25 下午10:01
  */
-@Api(tags = "UmsResourceCategoryController", produces = "商品分类管理")
+@Api(tags = "商品分类管理")
 @RestController
 @RequestMapping("/resourceCategory")
 public class UmsResourceCategoryController {

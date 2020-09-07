@@ -17,7 +17,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/9/5 下午3:54
  */
-@Api(tags = "SmsHomeRecommendProductController", produces = "首页人气推荐管理")
+@Api(tags = "首页人气推荐管理")
 @RestController
 @RequestMapping("/home/recommendProduct")
 public class SmsHomeRecommendProductController {

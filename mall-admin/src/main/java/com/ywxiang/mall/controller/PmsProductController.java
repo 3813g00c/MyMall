@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2020/8/29 下午3:23
  */
 @RestController
-@Api(tags = "PmsProductController", produces = "商品管理")
+@Api(tags = "商品管理")
 @RequestMapping("/product")
 public class PmsProductController {
     @Autowired

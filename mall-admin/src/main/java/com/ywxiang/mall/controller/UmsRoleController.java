@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2020/8/17 下午9:47
  */
 @RestController
-@Api(tags = "UmsRoleController", produces = "后台用户角色管理")
+@Api(tags = "后台用户角色管理")
 @RequestMapping("/role")
 public class UmsRoleController {
 

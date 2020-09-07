@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @date 2020/8/11 下午9:35
  */
 @RestController
-@Api(tags = "UmsAdminController", description = "后台用户管理")
+@Api(tags = "后台用户管理")
 @RequestMapping("/admin")
 public class UmsAdminController {
 

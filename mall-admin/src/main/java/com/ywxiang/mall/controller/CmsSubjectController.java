@@ -17,7 +17,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/9/5 下午1:18
  */
-@Api(tags = "CmsSubjectController", produces = "商品专题管理")
+@Api(tags = "商品专题管理")
 @RestController
 @RequestMapping("/subject")
 public class CmsSubjectController {

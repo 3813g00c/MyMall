@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author ywxiang
  * @date 2020/9/3 下午8:38
  */
-@Api(tags = "OSSController", produces = "OSS管理")
+@Api(tags = "OSS管理")
 @RestController
 @RequestMapping("/aliyun/oss")
 public class OssController {

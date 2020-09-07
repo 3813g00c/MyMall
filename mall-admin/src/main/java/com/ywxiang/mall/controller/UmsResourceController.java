@@ -18,7 +18,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/8/24 下午10:20
  */
-@Api(tags = "UmsResourceController", produces = "后台资源管理")
+@Api(tags = "后台资源管理")
 @RestController
 @RequestMapping("/resource")
 public class UmsResourceController {

@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2020/8/23 下午8:20
  */
 @Controller
-@Api(tags = "UmsMenuController", produces = "后台菜单管理")
+@Api(tags = "后台菜单管理")
 @RequestMapping("/menu")
 public class UmsMenuController {
 

@@ -16,7 +16,7 @@ import java.util.List;
  * @author ywxiang
  * @date 2020/9/5 下午1:47
  */
-@Api(tags = "CmsPreferenceAreaController", produces = "商品优选管理")
+@Api(tags = "商品优选管理")
 @RestController
 @RequestMapping("/prefrenceArea")
 public class CmsPreferenceAreaController {
