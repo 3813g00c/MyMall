@@ -216,7 +216,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def flush(self, count):
         self.label.setText(str(count))
 
-    def workStart(self):
+    def workStart(self):https://blog.csdn.net/czyt1988/article/details/71194457?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param
         print('button start.')
         self.pushButton_Start.setEnabled(False)
         self.thread.start()
@@ -239,3 +239,4 @@ if __name__ == "__main__":
     myshow.show()
     sys.exit(app.exec_())
 ```
+<httpshttps://blog.csdn.net/czyt1988/article/details/71194457?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param://blog.csdn.net/czyt1988/article/details/71194457?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param)>
