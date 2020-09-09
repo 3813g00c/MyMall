@@ -239,4 +239,4 @@ if __name__ == "__main__":
     myshow.show()
     sys.exit(app.exec_())
 ```
-<httpshttps://blog.csdn.net/czyt1988/article/details/71194457?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param://blog.csdn.net/czyt1988/article/details/71194457?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param)>
+<https://blog.csdn.net/czyt1988/article/details/71194457>
