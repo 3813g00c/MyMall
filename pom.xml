@@ -19,6 +19,8 @@
         <module>mall-common</module>
         <module>mall-security</module>
         <module>mall-mbg</module>
+        <module>mall-portal</module>
+        <module>mall-portal</module>
     </modules>
 
     <dependencies>
