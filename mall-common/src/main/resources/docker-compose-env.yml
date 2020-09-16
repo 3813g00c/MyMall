@@ -79,10 +79,10 @@ services:
       - "elasticsearch.hosts=http://es:9200" #设置访问elasticsearch的地址
     ports:
       - 5601:5601
-#  mongo:
-#    image: mongo:4.2.5
-#    container_name: mongo
-#    volumes:
-#      - /home/ywxiang/ProgramData/mongo/db:/data/db #数据文件挂载
-#    ports:
-#      - 27017:27017
+  mongo:
+    image: mongo:4.2.5
+    container_name: mongo
+    volumes:
+      - /home/ywxiang/ProgramData/mongo/db:/data/db #数据文件挂载
+    ports:
+      - 27017:27017
