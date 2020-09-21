@@ -1,8 +1,7 @@
 package com.ywxiang.mall.portal.service.impl;
 
-import com.ywxiang.mall.mapper.SmsFlashPromotionMapper;
-import com.ywxiang.mall.mapper.SmsFlashPromotionSessionMapper;
-import com.ywxiang.mall.mapper.SmsHomeAdvertiseMapper;
+import com.github.pagehelper.PageHelper;
+import com.ywxiang.mall.mapper.*;
 import com.ywxiang.mall.model.*;
 import com.ywxiang.mall.portal.dao.HomeDao;
 import com.ywxiang.mall.portal.domain.FlashPromotionProduct;
@@ -32,6 +31,12 @@ public class HomeServiceImpl implements HomeService {
     private SmsFlashPromotionMapper flashPromotionMapper;
     @Autowired
     private SmsFlashPromotionSessionMapper promotionSessionMapper;
+    @Autowired
+    private PmsProductMapper productMapper;
+    @Autowired
+    private PmsProductCategoryMapper productCategoryMapper;
+    @Autowired
+    private CmsSubjectMapper subjectMapper;
 
     @Override
     public HomeContentResult content() {
@@ -43,6 +48,47 @@ public class HomeServiceImpl implements HomeService {
         result.setHotProductList(homeDao.getHotProductList(0, 6));
         result.setSubjectList(homeDao.getRecommendSubjectList(0, 6));
         return result;
+    }
+
+    @Override
+    public List<PmsProduct> recommendProductList(Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        PmsProductExample example = new PmsProductExample();
+        example.createCriteria().andDeleteStatusEqualTo(0).andPublishStatusEqualTo(1);
+        return productMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<PmsProductCategory> getProductCateList(Long parentId) {
+        PmsProductCategoryExample example = new PmsProductCategoryExample();
+        example.createCriteria()
+                .andShowStatusEqualTo(1)
+                .andParentIdEqualTo(parentId);
+        example.setOrderByClause("sort desc");
+        return productCategoryMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<CmsSubject> getSubjectList(Long cateId, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        CmsSubjectExample example = new CmsSubjectExample();
+        CmsSubjectExample.Criteria criteria = example.createCriteria();
+        if (cateId != null) {
+            criteria.andCategoryIdEqualTo(cateId);
+        }
+        return subjectMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<PmsProduct> hotProductList(Integer pageNum, Integer pageSize) {
+        int offset = pageSize * (pageNum - 1);
+        return homeDao.getHotProductList(offset, pageSize);
+    }
+
+    @Override
+    public List<PmsProduct> newProductList(Integer pageNum, Integer pageSize) {
+        int offset = pageSize * (pageNum - 1);
+        return homeDao.getNewProductList(offset, pageSize);
     }
 
     /**
