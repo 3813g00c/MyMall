@@ -44,4 +44,44 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         }
         return null;
     }
+
+    @Override
+    public UmsMember getById(Long id) {
+        return null;
+    }
+
+    @Override
+    public void register(String username, String password, String telephone, String authCode) {
+
+    }
+
+    @Override
+    public void updatePassword(String telephone, String password, String authCode) {
+
+    }
+
+    @Override
+    public String generateAuthCode(String telephone) {
+        return null;
+    }
+
+    @Override
+    public UmsMember getCurrentMember() {
+        return null;
+    }
+
+    @Override
+    public void updateIntegration(Long id, Integer integration) {
+
+    }
+
+    @Override
+    public String login(String username, String password) {
+        return null;
+    }
+
+    @Override
+    public String refreshToken(String token) {
+        return null;
+    }
 }
