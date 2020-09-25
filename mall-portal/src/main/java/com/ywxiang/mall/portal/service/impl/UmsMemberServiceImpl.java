@@ -10,7 +10,9 @@ import com.ywxiang.mall.model.UmsMemberLevelExample;
 import com.ywxiang.mall.portal.domain.MemberDetails;
 import com.ywxiang.mall.portal.service.UmsMemberCacheService;
 import com.ywxiang.mall.portal.service.UmsMemberService;
+import com.ywxiang.mall.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author ywxiang
@@ -66,8 +69,8 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Override
     public void register(String username, String password, String telephone, String authCode) {
-//验证验证码
-        if(!verifyAuthCode(authCode,telephone)){
+        //验证验证码
+        if (!verifyAuthCode(authCode, telephone)) {
             Asserts.fail("验证码错误");
         }
         //查询是否已有该用户
@@ -98,26 +101,53 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Override
     public void updatePassword(String telephone, String password, String authCode) {
-
+        UmsMemberExample example = new UmsMemberExample();
+        example.createCriteria().andPhoneEqualTo(telephone);
+        List<UmsMember> memberList = memberMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(memberList)) {
+            Asserts.fail("账号不存在");
+        }
+        // 验证验证码
+        if (!verifyAuthCode(authCode, telephone)) {
+            Asserts.fail("验证码错误");
+        }
+        UmsMember umsMember = memberList.get(0);
+        umsMember.setPassword(passwordEncoder.encode(password));
+        memberMapper.updateByPrimaryKeySelective(umsMember);
+        memberCacheService.delMember(umsMember.getId());
     }
 
     @Override
     public String generateAuthCode(String telephone) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            sb.append(random.nextInt(10));
+        }
+        memberCacheService.setAuthCode(telephone, sb.toString());
+        return sb.toString();
     }
 
     @Override
     public UmsMember getCurrentMember() {
-        return null;
+        Authentication auth = SecurityUtils.getAuthentication();
+        assert auth != null;
+        MemberDetails memberDetails = (MemberDetails) auth.getPrincipal();
+        return memberDetails.getUmsMember();
     }
 
     @Override
     public void updateIntegration(Long id, Integer integration) {
-
+        UmsMember record = new UmsMember();
+        record.setId(id);
+        record.setIntegration(integration);
+        memberMapper.updateByPrimaryKeySelective(record);
+        memberCacheService.delMember(id);
     }
 
     @Override
     public String login(String username, String password) {
+
         return null;
     }
 

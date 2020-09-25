@@ -59,7 +59,7 @@ public class SecurityUtils {
         String username = null;
         if(authentication != null) {
             Object principal = authentication.getPrincipal();
-            if(principal != null && principal instanceof UserDetails) {
+            if(principal instanceof UserDetails) {
                 username = ((UserDetails) principal).getUsername();
             }
         }
