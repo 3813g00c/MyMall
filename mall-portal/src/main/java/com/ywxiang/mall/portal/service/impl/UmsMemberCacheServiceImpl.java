@@ -6,11 +6,13 @@ import com.ywxiang.mall.portal.service.UmsMemberCacheService;
 import com.ywxiang.mall.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author ywxiang
  * @date 2020/9/22 下午8:58
  */
+@Service
 public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
 
     @Autowired
