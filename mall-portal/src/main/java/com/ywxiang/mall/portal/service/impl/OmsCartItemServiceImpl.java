@@ -24,8 +24,8 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     private OmsCartItemMapper cartItemMapper;
     @Autowired
     private PortalProductDao productDao;
-    @Autowired
-    private Oms
+//    @Autowired
+//    private Oms
     @Override
     public int add(OmsCartItem cartItem) {
         return 0;
