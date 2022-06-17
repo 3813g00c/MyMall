@@ -104,7 +104,7 @@
         <mall-mbg.version>1.0-SNAPSHOT</mall-mbg.version>
         <mall-security.version>1.0-SNAPSHOT</mall-security.version>
         <jaxb.version>2.3.0</jaxb.version>
-        <fastjson.version>1.2.70</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
     </properties>
 
